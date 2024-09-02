@@ -3,8 +3,8 @@ const io = require('socket.io')
 
 const server = http.createServer()
 
-server.listen(3000, () => {
-    console.log('server running on 3000');
+server.listen(3001, () => {
+    console.log('server running on 3001');
 })
 const socketeer = io(server, { cors: ['127.0.0.1:5500'] })
 
@@ -83,9 +83,9 @@ function wrapUP(table) {
 
 class Player {
     players = []
-    constructor(name, socket) {
+    constructor(name, id, socket) {
         this.name = name
-        this.id = ~~(Math.random() * 10000)
+        this.id = id
         this.hand = []
         this.ate = []
         this.socket = socket
@@ -118,7 +118,7 @@ class Table {
         }
     }
 }
- 
+
 
 class Room {
     constructor(id, players) {
@@ -153,10 +153,12 @@ let rooms = {}
 let queue = []
 socketeer.on('connection', (socket) => {
     console.log('new socket ', socket.id);
-    socket.on('queue', (name) => {
+
+    socket.on('queue', (id, name) => {
+
         if (!queue.find((el) => el.socket === socket)) {
-            queue.push(new Player(name, socket))
-            console.log(queue.map((el) => { return el.name }));
+            queue.push(new Player(id, name, socket))
+            socket.emit('queueSuccess', true)
         }
         if (queue.length === 2) {
             for (const player of queue) {
@@ -170,12 +172,15 @@ socketeer.on('connection', (socket) => {
             k++
             queue = []
         }
+        console.log(queue.map((el) => { return el.id }));
     })
     socket.on('unqueue', () => {
-        queue = queue.filter((el) => { return el.socket.id != socket.id })
+        queue = queue.filter((el) => el.socket.id != socket.id)
+        socket.emit('queueSuccess', false)
+        console.log(queue)
     })
     socket.on('disconnect', (reason) => {
-        queue = queue.filter((el) => { return el.socket.id != socket.id })
+        queue = queue.filter((el) => el.socket.id != socket.id)
     })
 })
 
