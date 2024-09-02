@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" id="name" />
+    <button id="setname">set name</button>
+    <button id="queue">Queue</button>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="module">
+      import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+
+      const socket = io("localhost:3000");
+      let name = "user" + Math.random();
+      let queuing = false;
+      socket.on("connect", () => {
+        console.log("connected to server");
+      });
+      socket.on("data", (data) => {
+        console.log(data);
+      });
+      $("#setname").click(() => {
+        name = $("#name").val().trim() || "user4561231";
+      });
+
+      $("#queue").click(() => {
+        queuing = !queuing;
+        socket.emit((queuing ? "" : "un") + "queue", name);
+        alert((queuing ? "" : "un") + "queueing");
+        $("#queue").text((queuing ? "un" : "") + "queue");
+      });
+    </script>
+  </body>
+</html>
