@@ -12,8 +12,17 @@ interface userState {
   init: () => void;
   queue: () => void;
   unqueue: () => void;
-  setNickName: (nickname: string) => void;
-  setSocket: () => void;
+  setNickName: (nickname: string) => void; 
+}
+function setSocket(set:Function) {
+  const socket = io("http://127.0.0.1:3001");
+  socket.on("connect", () => {
+    console.log("connected");
+  });
+  socket.on("queueSuccess", (data: boolean) => {
+    set({ queueing: data, loading: false });
+  });
+  return socket
 }
 
 export const userStore = create<userState>((set) => ({
@@ -23,12 +32,13 @@ export const userStore = create<userState>((set) => ({
   nickname: null,
   socket: null,
   currentGameId: null,
-  queue: () =>{ 
+  queue: () => {
     set((state) => {
       if (state.loading || state.queueing === true) return {};
       state.socket.emit("queue", state.userId, state.nickname);
       return { loading: true };
-    })},
+    });
+  },
   unqueue: () =>
     set((state) => {
       if (state.loading || state.queueing === false) return {};
@@ -41,17 +51,7 @@ export const userStore = create<userState>((set) => ({
       queueing: false,
       userId: uuidv4(),
       nickname: null,
-      socket: null,
+      socket: setSocket(set),
       currentGameId: null,
     }),
-  setSocket: () => {
-    const socket = io("http://127.0.0.1:3001");
-    set({ socket: socket });
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-    socket.on("queueSuccess", (data: boolean) => {
-      set({ queueing: data, loading: false });
-    });
-  },
 }));

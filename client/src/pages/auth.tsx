@@ -1,15 +1,14 @@
 import { Navigate } from "react-router-dom";
 import { userStore } from "../stores/user";
+import { useEffect } from "react";
 function Authenticate() {
   const user = userStore();
-  if (!user.socket) {
-    user.init();
-    user.setSocket();
-    //to block further rendering until initialization is complete aka the "bad set state"
-    return <></>;
-  } else {
-    return <Navigate to="/queue" />;
-  }
+  useEffect(() => {
+    if (!user.socket) {
+      user.init();
+    }
+  }, [user]);
+  return <>{user && <Navigate to="/queue" />}</>;
 }
 
 export default Authenticate;
