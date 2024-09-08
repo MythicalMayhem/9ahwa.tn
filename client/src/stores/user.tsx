@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 interface userState {
-  currentGameId: string | null;
+  gameRoom: string | null;
   userId: string | null;
   socket: any;
   nickname: string | null;
@@ -12,17 +12,21 @@ interface userState {
   init: () => void;
   queue: () => void;
   unqueue: () => void;
-  setNickName: (nickname: string) => void; 
+  setNickName: (nickname: string) => void;
 }
-function setSocket(set:Function) {
-  const socket = io("http://127.0.0.1:3001");
+function setSocket(set: Function) {
+  const socket = io("http://127.0.0.1:3001", {});
   socket.on("connect", () => {
     console.log("connected");
+  });
+  socket.on("gamestarted", (data) => {
+    console.log(data);
+    set({ gameRoom: JSON.parse(data) });
   });
   socket.on("queueSuccess", (data: boolean) => {
     set({ queueing: data, loading: false });
   });
-  return socket
+  return socket;
 }
 
 export const userStore = create<userState>((set) => ({
@@ -31,7 +35,10 @@ export const userStore = create<userState>((set) => ({
   userId: null,
   nickname: null,
   socket: null,
-  currentGameId: null,
+  gameRoom: null,
+  hand: [],
+  ate: [],
+
   queue: () => {
     set((state) => {
       if (state.loading || state.queueing === true) return {};
@@ -48,10 +55,10 @@ export const userStore = create<userState>((set) => ({
   setNickName: (nickname: string) => set({ nickname }),
   init: () =>
     set({
-      queueing: false,
       userId: uuidv4(),
-      nickname: null,
       socket: setSocket(set),
-      currentGameId: null,
+      nickname: null,
+      gameRoom: null,
+      queueing: false,
     }),
 }));

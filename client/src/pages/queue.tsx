@@ -3,11 +3,10 @@ import { userStore } from "../stores/user";
 
 function QueuePage() {
   const user = userStore();
-  console.log(user.socket)
   if (!user.socket) {
     return <Navigate to="/auth" />;
   }
-  console.log('rendered')
+  console.log('queue rendered')
   const handleQueue = () => {
     if (!user.nickname) return;
     user.queue();
