@@ -4,18 +4,21 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Navigator from "./pages/navigator";
 import QueuePage from "./pages/queue";
-import Chkoba from "./pages/chkoba";
+import Game from "./pages/game";
+import HomePage from "./pages/homePage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
     <Router>
       <Navigator />
       <Routes>
+        <Route element={<HomePage />}  path="/" />
+        <Route element={<Game />}      path="/game" />
         <Route element={<QueuePage />} path="/queue" />
-        <Route element={<Chkoba />}    path="/chkoba" />
       </Routes>
     </Router>
   </React.StrictMode>

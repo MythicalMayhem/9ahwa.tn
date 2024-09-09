@@ -1,16 +1,13 @@
-import { Navigate } from "react-router-dom";
 import { userStore } from "../stores/user";
 
 function QueuePage() {
   const user = userStore();
-  if (!user.socket) {
-    return <Navigate to="/auth" />;
-  }
-  console.log('queue rendered')
+
   const handleQueue = () => {
+    user.queue("nameeee");
     if (!user.nickname) return;
-    user.queue();
   };
+ 
 
   const handleUnqueue = () => {
     user.unqueue();
@@ -18,6 +15,7 @@ function QueuePage() {
 
   return (
     <div>
+      
       <strong>username :</strong>
       {user.nickname || <b style={{ color: "red" }}>Choose nickname</b>}
       <br />
