@@ -32,7 +32,7 @@ function setSocket(set: Function) {
     set((state: any) => ({
       gameRoom: {
         ...state.gameRoom,
-        ...(data),
+        ...data,
       },
     }));
   });
@@ -41,7 +41,7 @@ function setSocket(set: Function) {
     set((state: any) => ({
       gameRoom: {
         ...state.gameRoom,
-        ...(data),
+        ...data,
       },
     }));
   });
@@ -50,7 +50,6 @@ function setSocket(set: Function) {
   });
   socket.on("hand", (data) => {
     console.log("hand", data);
-
     set((state: any) => ({ gameRoom: { ...state.gameRoom, hand: data } }));
   });
   return socket;

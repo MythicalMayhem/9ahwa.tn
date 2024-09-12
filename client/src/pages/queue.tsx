@@ -5,9 +5,12 @@ function QueuePage() {
 
   const handleQueue = () => {
     user.queue("nameeee");
+    const q = 10;
+    console.log(q);
+
     if (!user.nickname) return;
   };
- 
+
 
   const handleUnqueue = () => {
     user.unqueue();
@@ -15,7 +18,6 @@ function QueuePage() {
 
   return (
     <div>
-      
       <strong>username :</strong>
       {user.nickname || <b style={{ color: "red" }}>Choose nickname</b>}
       <br />
