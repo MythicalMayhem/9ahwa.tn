@@ -61,8 +61,7 @@ export const userStore = create<userState>((set) => ({
   userId: null,
   nickname: null,
   socket: null,
-  gameRoom: null,
-  ate: [],
+  gameRoom: null, 
 
   queue: (name) => {
     set((state) => {

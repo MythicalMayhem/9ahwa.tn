@@ -8,8 +8,7 @@ function Game() {
   const [handSelected, setHandSelected] = useState(-1);
   if (!gameRoom) return <Navigate to="/queue" />;
 
-  const handSumbit = () =>
-     {
+  const handSumbit = () => {
     if (handSelected === -1) return;
     const sels = Object.keys(selected)
       .reduce(
@@ -36,7 +35,7 @@ function Game() {
       {gameRoom.turn && "Your turn"}
       <h1>Roomid : {gameRoom?.id}</h1>
       <h3>{nickname}(you)</h3>
-      playing aginst
+      playing against
       <h2>{gameRoom?.players?.find((el) => nickname !== el) || nickname}</h2>
       <div>
         on <em>ground</em>: <br />
@@ -63,6 +62,7 @@ function Game() {
         ))}
         <button onClick={handSumbit}>submit</button>
       </div>
+ 
     </>
   );
 }
