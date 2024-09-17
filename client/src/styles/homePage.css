@@ -1,0 +1,21 @@
+.home-page {
+	header {
+		text-align: center;
+		font-size: 400%;
+		font-weight: bolder;
+		font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+			"Lucida Sans", Arial, sans-serif;
+	}
+	section {
+		.card {
+			flex-grow: 1;
+			max-width: 30vw;
+			min-width: 300px;
+		}
+	}
+	min-width: 300px;
+	width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

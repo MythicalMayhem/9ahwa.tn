@@ -3,10 +3,10 @@ import { userStore } from "../stores/user";
 import { Navigate } from "react-router-dom";
 
 function Game() {
-  const { gameRoom, nickname, sendPlay } = userStore();
-  const [selected, setSelected] = useState<{ [i: string]: boolean }>({});
-  const [handSelected, setHandSelected] = useState(-1);
-  if (!gameRoom) return <Navigate to="/queue" />;
+  const [selected, setSelected] = useState<{ [i: string]: boolean }>({})
+  const [handSelected, setHandSelected] = useState(-1)
+  const { gameRoom, nickname, sendPlay } = userStore()
+  if (!gameRoom) return <Navigate to="/queue" />
 
   const handSumbit = () => {
     if (handSelected === -1) return;
@@ -17,10 +17,10 @@ function Game() {
       )
       .replace(/[ +]/, " ")
       .trim();
-    if (!sels) return sendPlay("d" + String(handSelected));
+    if (!sels) sendPlay("d" + String(handSelected));
     else sendPlay(String(handSelected) + "!" + sels);
-    setSelected({});
     setHandSelected(-1);
+    setSelected({});
   };
   const handleSelect = (i: number) => {
     setSelected({ ...selected, [i]: !selected[i] });
@@ -28,15 +28,16 @@ function Game() {
   const handleHandSelect = (i: number) => {
     if (handSelected === i) return setHandSelected(-1);
     setHandSelected(i);
-  };
+  }
 
   return (
     <>
-      {gameRoom.turn && "Your turn"}
+
+      {(gameRoom?.players?.findIndex((el) => nickname === el) === gameRoom.turn) && 'Your Turn'}
       <h1>Roomid : {gameRoom?.id}</h1>
-      <h3>{nickname}(you)</h3>
+      {/* e<h3>{nickname}(you)</h3> */}
       playing against
-      <h2>{gameRoom?.players?.find((el) => nickname !== el) || nickname}</h2>
+      <h2>{gameRoom?.players?.find((el) => nickname === el) || nickname}</h2>
       <div>
         on <em>ground</em>: <br />
         {gameRoom?.ground?.map((el, i) => (
@@ -62,7 +63,7 @@ function Game() {
         ))}
         <button onClick={handSumbit}>submit</button>
       </div>
- 
+
     </>
   );
 }

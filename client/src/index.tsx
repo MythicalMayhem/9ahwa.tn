@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "./styles/default.css"
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -16,8 +18,8 @@ root.render(
     <Router>
       <Navigator />
       <Routes>
-        <Route element={<HomePage />}  path="/" />
-        <Route element={<Game />}      path="/game" />
+        <Route element={<HomePage />} path="/" />
+        <Route element={<Game />} path="/game" />
         <Route element={<QueuePage />} path="/queue" />
       </Routes>
     </Router>
