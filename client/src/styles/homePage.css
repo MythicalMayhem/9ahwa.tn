@@ -1,21 +1,86 @@
 .home-page {
-	header {
-		text-align: center;
-		font-size: 400%;
+	.header {
+		position: relative;
+		font-size: 60px;
 		font-weight: bolder;
-		font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-			"Lucida Sans", Arial, sans-serif;
+		text-shadow: 0px 0px 10px black;
+		text-align: center;
+		line-height: 1.5em;
+		padding-bottom: 45px;
+		font-family: "Playfair Display", serif;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		color: white;
+
+		&:before {
+			position: absolute;
+			left: 0;
+			bottom: 20px;
+			width: 60%;
+			left: 50%;
+			margin-left: -30%;
+			height: 1px;
+			content: "";
+			background-color: #777;
+			z-index: 4;
+		}
+		&:after {
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			left: 50%;
+			margin-left: -20px;
+			bottom: 0px;
+			content: "\00a7";
+			font-size: 30px;
+			line-height: 40px;
+			color: #c50000;
+			font-weight: 400;
+			z-index: 5;
+			display: block;
+			background-color: #f8f8f8;
+		}
 	}
 	section {
 		.card {
+			background: url("../../public/imgs/games/chkobba.jpg");
+
+			background-size: cover;
+			background-position: bottom center;
+			box-shadow: 0px 0px 10px black;
 			flex-grow: 1;
-			max-width: 30vw;
+			max-width: 25vw;
 			min-width: 300px;
+			border: 5px solid white;
+			.text {
+				display: flex;
+				flex-direction: column;
+				padding: 10px;
+				padding-top: 4cm;
+				backdrop-filter: blur(5px)  ;
+				background: linear-gradient(
+					0deg,
+					rgba(133, 133, 133, 0.859) 0%,
+					rgba(255, 255, 255, 0.859) 50%,
+					rgba(255, 255, 255, 0) 100%
+				);
+				button {
+					cursor: pointer;
+					background-color: black;
+					border: none;
+					box-shadow: 0px 0px 12px black;
+					color: white;
+					align-self: flex-end;
+					height: 1cm;
+					font-size: x-large;
+					font-weight: bold;
+				}
+			}
 		}
 	}
 	min-width: 300px;
 	width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
