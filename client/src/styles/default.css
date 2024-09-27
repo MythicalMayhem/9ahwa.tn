@@ -2,6 +2,7 @@
 	box-sizing: border-box;
 	margin: 0;
 	font-family: sans-serif;
+	transition-duration: 0.1s;
 }
 html,
 body {
@@ -12,6 +13,7 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 body {
 	background-image: url("../../public/imgs/background.jpg");

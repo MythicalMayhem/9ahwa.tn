@@ -1,0 +1,51 @@
+.queue-wrapper {
+	gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	.nickname-label {
+		align-self: flex-start;
+	}
+	.nickname-label {
+		-webkit-text-stroke: 1px rgba(172, 255, 47, 0.436);
+	}
+	.user-name {
+		color: wheat;
+		font-weight: bolder;
+		text-shadow: 0px 0px 10px rgb(0, 0, 0);
+		-webkit-text-stroke: 1px rgb(120, 99, 99);
+		.no-user-name {
+			color: red;
+		}
+	}
+	.user-name-input {
+		&:focus {
+			outline: none;
+		}
+		width: 80vw;
+		border: none;
+		height: 4rem;
+		padding: 0.5rem 1rem;
+		font-size: min(8vw, 25px);
+		box-shadow: 0px 0px 10px black, 0px 0px 20px rgb(99, 99, 99) inset;
+		font-weight: bolder;
+		border-radius: 0.2cm;
+		backdrop-filter: blur(5px);
+		background-color: #ffffffd2;
+	}
+	.queued {
+		height: 7vh;
+		border: none;
+		outline: none;
+		color: white;
+		margin-left: 50%;
+		margin-top: 1rem;
+		font-weight: bolder;
+		padding: 0.5rem 1rem;
+		font-size: min(8vw, 25px);
+		background-color: #38c163;
+		box-shadow: 0px 0px 10px rgb(0, 255, 51);
+		-webkit-text-stroke: 1px rgba(0, 72, 131, 0.39);
+	}
+}
