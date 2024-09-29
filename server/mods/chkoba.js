@@ -1,63 +1,57 @@
-import { io } from "../index.js"
-
-
-
+function Serve(table, player) {
+    while (player.hand.length < 3) player.hand.push(table.deck.pop())
+    player.socket.emit('hand', player.hand)
+}
 export const ChkobaTable = class {
     constructor(players, roomid) {
         this.roomId = roomid
         this.players = players
-        this.deck = generateDeck();
+        this.deck = [
+            'd0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9',
+            'h0', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9',
+            's0', 's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9',
+            'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9',
+        ].sort(() => Math.random() - 0.5);
+        this.lastAte = null;
         this.ground = [];
         this.turn = 0;
-        this.lastAte = null;
     }
     next() {
-        // this.turn = (this.turn + 1) % this.players.length;
-        console.log(this.turn)
-        // if ((this.turn === 0) && this.players[this.turn].hand.length === 0) {
-        // console.log(this.deck.length, this.players.map((el) => el.hand))
-        // if (this.deck.length === 0) {
-        // this.lastAte?.ate.push(...this.ground);
-        // wrapUP(this)
-        // io.to(this.roomId).emit('gameEnd', 'game End info')
-        // return
-        // }
-        // else for (const player of this.players) { Serve(this, player) }
-        // }
-        // io.to(this.roomId).emit('gamedata', JSON.stringify(getRoomData(this)));
+        this.wrapUP()
+        this.turn = (this.turn + 1) % this.players.length;
+        if ((this.turn === 0) && this.players[this.turn].hand.length === 0) {
+            if (this.deck.length === 0) {
+                this.lastAte?.ate.push(...this.ground);
+                return this.wrapUP()
+            }
+            else for (const player of this.players) { Serve(this, player) }
+        }
+        return false
+    }
+    wrapUP() {
+        const res = {}
+        if (this.lastAte) this.lastAte.ate = this.lastAte.ate.concat(this.ground);
+        for (let player of this.players) res[player.name] = player.ate
+        return res
     }
 }
 
 
-
-function Serve(table, player) {
-    if (table.deck.length < 0) table.deck = generateDeck()
-    while (player.hand.length < 3) player.hand.push(table.deck.pop())
-    player.socket.emit('hand', player.hand)
-}
 export const getRoomData = (table) => ({
     players: table.players.map((plr) => plr.name),
     ground: table.ground, id: table.roomId, deck: table.deck,
     turn: table.turn
 })
 export function init(table) {
-    for (const player of table.players) {
-        Serve(table, player)
-    }
-    while (table.ground.length < 4) table.ground.push(table.deck.pop(0));
+    for (const player of table.players) Serve(table, player)
+    while (table.ground.length < 4) table.ground.push(table.deck.pop(0))
 }
-
-const deck = [
-    'd0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9',
-    'h0', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9',
-    's0', 's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9',
-    'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9',
-]
-export function generateDeck() { return deck.copyWithin().sort(() => Math.random() - 0.5) }
 function isValid(table, handSelected, groundSelected) {
     let res = 0
-    for (let index of groundSelected) { res += table.ground[index][1] }
-    return res === table.players[table.turn].hand[handSelected][1];
+
+    for (let index of groundSelected) res += parseInt(table.ground[index][1]) + 1
+    console.log(handSelected, groundSelected, parseInt(table.players[table.turn].hand[handSelected][1]) + 1, res);
+    return res === parseInt(table.players[table.turn].hand[handSelected][1]) + 1;
 }
 const numbers = []
 for (let i = 0; i < 10; i++) { numbers.push(String(i)) }
@@ -73,21 +67,25 @@ export function Drop(table, handCardIndex) {
 }
 
 function Eat(table, handCardIndex, groundindexes) {
+    if (!isValid(table, handCardIndex, groundindexes)) throw new Error("invalid");
+
     const player = table.players[table.turn]
-    player.ate.push(player.hand.splice(handCardIndex, 1)[0])
-    for (let index of groundindexes) { player.ate.push(table.ground.splice(index, 1)[0]) }
-    table.lastAte = player
+    for (let i = 0; i < groundindexes.length; i++)
+        player.ate.push(table.ground[groundindexes[i]])
+
+
+    table.ground = table.ground.filter((el, i) => groundindexes.findIndex((e) => e === i) === -1)
+    player.ate.push(player.hand[handCardIndex])
+    table.players[table.turn].hand = table.players[table.turn].hand.filter((el, ind) => ind !== handCardIndex)
+    table.lastAte = table.players[table.turn]
 
 }
-function wrapUP(table) {
-    table.lastAte.ate = table.lastAte.ate.concat(table.ground);
-    // for (let player of table.players) console.log(player.ate.map(k => String(k)));
-}
 
-
-//* wannabe Lexer 
+//* wannabe Lexer
+//! Unnecessary, just wrap everything inside trycatch
 export function ProcessInput(inp) {
     const [hand, ground] = inp.split('!')
+
     if (!hand || !ground) { throw new Error('invalid input') }
     isStrInt(hand)
     let currentToken = ''
@@ -103,18 +101,24 @@ export function ProcessInput(inp) {
             continue
         } else { throw new Error('invalid input') }
     }
-    return [hand, groundindexes]
+    groundindexes.push(parseInt(currentToken))
+    return [parseInt(hand), groundindexes]
 }
-
 export function play(playerid, table, data) {
+    if (table.players[table.turn].id !== playerid) { return [table.players.find((el) => el.id === playerid).hand, false] }
+    if (data[0] == 'd') { Drop(table, parseInt(data[1])) }
+    else {
+        console.clear()
+        const [hand, groundindexes] = ProcessInput(data)
+        Eat(table, hand, groundindexes)
+        table.lastAte = table.players[table.turn]
+    }
 
-    if (table.players[table.turn].id !== playerid) return table.players.find((el) => el.id === playerid).hand
-    if (data[0] == 'd') Drop(table, parseInt(data[1]))
-    // else {
-    // Eat(table, ...ProcessInput(data))
-    // table.lastAte = table.players[table.turn]
-    // }
-    table.next()
-    return table.players[table.turn].hand
+    const tur = table.turn
+    const playerHand = table.players[tur].hand
+    const state = table.next()
+    console.log([playerHand, state]);
+    return [playerHand, true || state]
 }
+
 export const createRoomChkoba = (id, players) => new Room(k, queue, 'chkoba') 

@@ -1,9 +1,7 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import express from 'express'
 
 import { init, ChkobaTable, getRoomData, play } from './mods/chkoba.js'
-const app = express()
 const server = createServer()
 
 export const io = new Server(server, {
@@ -38,8 +36,7 @@ let k = 0
 let rooms = {}
 let queue = []
 io.on('connection', (socket) => {
-    console.log(socket.handshake.address);
-    socket.on('queue', (playerid, name, gameMode) => {
+    socket.on('queue', (playerid, name) => {
         if (!queue.find((el) => el.socket === socket)) {
             queue.push(new Player(name, playerid, socket))
             io.to(socket.id).emit('queueSuccess', true)
@@ -59,11 +56,16 @@ io.on('connection', (socket) => {
         io.to(socket.id).emit('queueSuccess', false)
     })
     socket.on('play', (roomid, playerid, data) => {
-        console.log(roomid, playerid, data);
         const room = rooms[roomid]
-        const hand = play(playerid, room.table, data)
-        io.to(socket.id).emit('hand', hand)
-        io.to(String(roomid)).emit('gamedata', (getRoomData(rooms[roomid].table)))
+        try {
+            const [hand, state] = play(playerid, room.table, data)
+            io.to(socket.id).emit('hand', hand)
+            io.to(String(roomid)).emit('gamedata', (getRoomData(rooms[roomid].table)))
+            if (state) io.to(String(roomid)).emit('gameend', state)
+
+        } catch (error) {
+            console.log(error);
+        }
 
     })
     socket.on('disconnect', (reason) => {
