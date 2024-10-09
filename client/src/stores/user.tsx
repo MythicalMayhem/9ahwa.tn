@@ -10,6 +10,8 @@ interface userState {
     hand: [];
     turn: number;
   } | null;
+  endGameData: any,
+
   userId: string | null;
   socket: any;
   nickname: string | null;
@@ -21,12 +23,8 @@ interface userState {
   unqueue: () => void;
   setNickName: (nickname: string) => void;
 }
-function setSocket(set: Function) {
-  console.log("new socket");
+function setSocket(set: (Function)) {
   const socket = io("http://127.0.0.1:3001", {});
-  socket.on("connect", () => {
-    console.log("connected");
-  });
   socket.on("gamestarted", (data) => {
     console.log("gamestarted", data);
     set((state: any) => ({
@@ -36,8 +34,9 @@ function setSocket(set: Function) {
       },
     }));
   });
+
   socket.on("gamedata", (data) => {
-    console.log("gamedata", data);
+    console.log('dataaa', data);
     set((state: any) => ({
       gameRoom: {
         ...state.gameRoom,
@@ -45,24 +44,26 @@ function setSocket(set: Function) {
       },
     }));
   });
-  socket.on("queueSuccess", (data: boolean) => {
-    set({ queueing: data, loading: false });
-  });
-  socket.on("hand", (data) => {
-    console.log("hand", data);
-    set((state: any) => ({ gameRoom: { ...state.gameRoom, hand: data } }));
-  });
+  socket.on("gameend", (data) => {
+    console.log("gameEnded", data);
+    set({ endGameData: { data } })
+  })
+  socket.on("queueSuccess", (data: boolean) => set({ queueing: data, loading: false }));
+  socket.on("hand", (data) => set((state: any) => ({ gameRoom: { ...state.gameRoom, hand: data } })));
+
   return socket;
 }
-
-export const userStore = create<userState>((set) => ({
+const initialState = {
   loading: false,
   queueing: false,
   userId: null,
   nickname: null,
   socket: null,
-  gameRoom: null, 
-
+  gameRoom: null,
+  endGameData: null,
+}
+export const userStore = create<userState>((set) => ({
+  ...initialState,
   queue: (name) => {
     set((state) => {
       if (state.loading || state.queueing === true) return {};
@@ -81,26 +82,16 @@ export const userStore = create<userState>((set) => ({
     set((state) => {
       if (!state.socket) {
         return {
+          ...initialState,
           userId: uuidv4(),
           socket: setSocket(set),
-          nickname: null,
-          gameRoom: null,
-          queueing: false,
+
         };
       }
       return {
+        ...initialState,
         userId: uuidv4(),
-        nickname: null,
-        gameRoom: null,
-        queueing: false,
       };
     }),
-  sendPlay: (str: string) => {
-    console.log(str);
-    set((state) => {
-      console.log(state.gameRoom?.id);
-      state.socket?.emit("play", state.gameRoom?.id, state.userId, str);
-      return {};
-    });
-  },
+  sendPlay: (str: string) => set((state) => state.socket?.emit("play", state.gameRoom?.id, state.userId, str))
 }));

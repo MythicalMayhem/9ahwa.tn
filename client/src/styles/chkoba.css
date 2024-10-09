@@ -1,0 +1,44 @@
+.hand-card {
+	cursor: pointer;
+	border-radius: 7px;
+	border: 1px solid #404040;
+	box-shadow: 5px 5px 10px black;
+	background-color: rgb(192, 192, 192);
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	gap: 0.25rem;
+	width:  100px;
+	height: 150px;
+	padding: 1rem;
+	.svg { 
+		flex: 1 1 ; 
+		width: 30%;
+		height: 30%;
+	}
+} 
+.chkoba {
+	color: whitesmoke;
+	background-color: rgba(0, 0, 0, 0.3);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	text-align: center; 
+
+	.hand, .ground {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+	}
+	.line-break {
+		margin: 2rem 0;
+	}
+	.submit-play {
+		padding: 0.7rem 1rem ;
+		border: none;
+		font-size: x-large;
+	}
+}
