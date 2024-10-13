@@ -46,7 +46,7 @@ function setSocket(set: (Function)) {
   });
   socket.on("gameend", (data) => {
     console.log("gameEnded", data);
-    set({ endGameData: { data } })
+    set({ endGameData:   data   })
   })
   socket.on("queueSuccess", (data: boolean) => set({ queueing: data, loading: false }));
   socket.on("hand", (data) => set((state: any) => ({ gameRoom: { ...state.gameRoom, hand: data } })));

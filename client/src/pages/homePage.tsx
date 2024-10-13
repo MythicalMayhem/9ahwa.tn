@@ -3,18 +3,19 @@ import "../styles/homePage.css"
 function HomePage() {
   const navigate = useNavigate()
   return <div className="home-page">
-    <div className="header">Home Page</div>
+    <div className="header">Sbe7 lward</div>
     <section>
 
-      <div className="card"  >
-
+      <div className="card">
         <div className="text">
-          <h1>Card Title</h1>
+          <h1>Chkoba</h1>
+          <br />
           <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            sit aut soluta eveniet quis aspernatur perspiciatis blanditiis.
-            Obcaecati ab nemo impedit.
+            Chkobba is a card game brought to Tunisia by Italian migrants.
+            The game pits two players or two teams of two players against each other most often, 
+            but it is possible to play with three or four independent players.
           </p>
+          <br />
           <button onClick={() => navigate("/queue")}> Queue </button>
         </div>
       </div>
