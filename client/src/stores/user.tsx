@@ -24,7 +24,7 @@ interface userState {
   setNickName: (nickname: string) => void;
 }
 function setSocket(set: (Function)) {
-  const socket = io("http://127.0.0.1:3001", {});
+  const socket = io("http://192.168.1.26:3001", {});
   socket.on("gamestarted", (data) => {
     console.log("gamestarted", data);
     set((state: any) => ({

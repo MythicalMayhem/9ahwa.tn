@@ -9,6 +9,7 @@ import QueuePage from "./pages/queue";
 import ChkobaGame from "./pages/chkoba";
 import HomePage from "./pages/homePage";
 import EndGame from "./pages/endgame";
+import MainGame from "./components/board";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,8 +17,9 @@ const root = ReactDOM.createRoot(
 
 root.render( 
     <Router>
-      <Navigator /> {/*HOC : higher order component*/}
+      {/* <Navigator /> HOC : higher order component */}
       <Routes>
+        <Route element={<MainGame />}   path="/new" />
         <Route element={<HomePage />}   path="/" />
         <Route element={<ChkobaGame />} path="/game" />
         <Route element={<QueuePage />}  path="/queue" />
